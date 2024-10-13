@@ -2006,25 +2006,24 @@
             <offset>0</offset>
         </joint>
     </transmission>
-    <transmission name="trans_diff_ee">
-        <type>transmission_interface/DifferentialTransmission</type>
-        <actuator name="left_diff_motor">
-            <role>actuator1</role>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-        <actuator name="right_diff_motor">
-            <role>actuator2</role>
+    <transmission name="trans_joint5">
+        <type>transmission_interface/SimpleTransmission</type>
+        <actuator name="joint5_motor">
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
         <joint name="joint5">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <offset>0</offset>
-            <role>joint1</role>
         </joint>
+    </transmission>
+    <transmission name="trans_joint6">
+        <type>transmission_interface/SimpleTransmission</type>
+        <actuator name="joint6_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
         <joint name="joint6">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <offset>0</offset>
-            <role>joint2</role>
         </joint>
     </transmission>
     <!--        <xacro:unless value="$(arg use_simulation)">-->
