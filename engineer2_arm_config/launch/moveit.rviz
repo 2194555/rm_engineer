@@ -4,7 +4,6 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Global Options1
         - /MotionPlanning1
         - /TF1
         - /TF1/Frames1
@@ -132,7 +131,7 @@ Visualization Manager:
       Frames:
         All Enabled: false
         base_link:
-          Value: true
+          Value: false
         fake_link4:
           Value: false
         gold_lifter_link:
@@ -152,15 +151,15 @@ Visualization Manager:
         link4:
           Value: false
         link5:
-          Value: true
+          Value: false
         link6:
           Value: true
         map:
-          Value: true
+          Value: false
         odom:
-          Value: true
+          Value: false
         pitch:
-          Value: true
+          Value: false
         right_back_wheel:
           Value: false
         right_front_wheel:
@@ -182,37 +181,38 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
+        base_link:
+          gold_pusher_link:
+            gold_lifter_link:
+              {}
+          left_back_wheel:
+            {}
+          left_front_wheel:
+            {}
+          link1:
+            link2:
+              link3:
+                fake_link4:
+                  {}
+                link4:
+                  link5:
+                    link6:
+                      tools_link:
+                        {}
+              yaw:
+                pitch:
+                  {}
+          right_back_wheel:
+            {}
+          right_front_wheel:
+            {}
+          silver_lifter_link:
+            silver_pusher_link:
+              silver_gripper_link:
+                {}
         map:
           odom:
-            base_link:
-              gold_pusher_link:
-                gold_lifter_link:
-                  {}
-              left_back_wheel:
-                {}
-              left_front_wheel:
-                {}
-              link1:
-                link2:
-                  link3:
-                    fake_link4:
-                      {}
-                    link4:
-                      link5:
-                        link6:
-                          tools_link:
-                            {}
-                  yaw:
-                    pitch:
-                      {}
-              right_back_wheel:
-                {}
-              right_front_wheel:
-                {}
-              silver_lifter_link:
-                silver_pusher_link:
-                  silver_gripper_link:
-                    {}
+            {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -334,7 +334,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: odom
+    Fixed Frame: base_link
     Frame Rate: 30
   Name: root
   Tools:
@@ -346,7 +346,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.3873012065887451
+      Distance: 1.3629440069198608
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -354,17 +354,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.75
       Focal Point:
-        X: 0.22694315016269684
-        Y: -0.3219256103038788
-        Z: 0.15961049497127533
+        X: -0.27402463555336
+        Y: -0.39333611726760864
+        Z: 0.4662781059741974
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.3847957849502563
+      Pitch: 1.419796109199524
       Target Frame: base_link
-      Yaw: 4.408130168914795
+      Yaw: 3.614947557449341
     Saved: ~
 Window Geometry:
   Displays:
@@ -374,7 +374,11 @@ Window Geometry:
     collapsed: false
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000001f3000005a6fc0200000007fb000000100044006900730070006c006100790073010000003d000005a6000000c900fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000010c000000a4000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000002f4000002ef0000000000000000000007bf000005a600000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  MotionPlanning:
+    collapsed: false
+  MotionPlanning - Trajectory Slider:
+    collapsed: false
+  QMainWindow State: 000000ff00000000fd0000000100000000000001f3000005a6fc0200000007fb000000100044006900730070006c006100790073010000003d000005a6000000c900fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000010c000000a4000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000002f4000002ef0000017d00ffffff000007bf000005a600000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
   Width: 2488

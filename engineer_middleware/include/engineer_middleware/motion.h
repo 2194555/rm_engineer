@@ -183,12 +183,13 @@ public:
       moveit_msgs::RobotTrajectory trajectory;
       std::vector<geometry_msgs::Pose> waypoints;
       waypoints.push_back(target_.pose);
-      if (interface_.computeCartesianPath(waypoints, 0.01, 0.0, trajectory) != 1)
+      if (interface_.computeCartesianPath(waypoints, 0.01, trajectory) != 1)
       {
         ROS_INFO_STREAM("Collisions will occur in the"
-                        << interface_.computeCartesianPath(waypoints, 0.01, 0.0, trajectory) << "of the trajectory");
+                        << interface_.computeCartesianPath(waypoints, 0.01, trajectory) << "of the trajectory");
         return false;
       }
+      interface_.setPlannerId()
       return interface_.asyncExecute(trajectory) == moveit::planning_interface::MoveItErrorCode::SUCCESS;
     }
     else
@@ -553,14 +554,14 @@ public:
       case 5:
         msg_.gpio_name[5] = "silver_pump";
         break;
-      case 6:
-        msg_.gpio_name[6] = "unused";
-        ROS_WARN_STREAM("GPIO port 7 is unused now!");
-        break;
-      case 7:
-        msg_.gpio_name[7] = "unused";
-        ROS_WARN_STREAM("GPIO port 7 is unused now!");
-        break;
+//      case 6:
+//        msg_.gpio_name[6] = "unused";
+//        ROS_WARN_STREAM("GPIO port 7 is unused now!");
+//        break;
+//      case 7:
+//        msg_.gpio_name[7] = "unused";
+//        ROS_WARN_STREAM("GPIO port 7 is unused now!");
+//        break;
     }
   }
   bool move() override
