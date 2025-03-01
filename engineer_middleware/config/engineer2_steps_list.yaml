@@ -22,6 +22,10 @@ common:
       tolerance_joints: [ 0.015, 0.04, 0.03, 0.35, 0.2, 0.2, 0.1 ]
     max_tolerance: &MAX_TOLERANCE
       tolerance_joints: [ 0.03, 0.03, 0.03, 0.3, 0.3, 0.3 , 0.3]
+    small_arm_normal_tolerance: &SMALL_ARM_NORMAL_TOLERANCE
+      tolerance_joints: [ 0.05, 0.05, 0.03 ]
+    small_arm_bigger_tolerance: &SMALL_ARM_BIGGER_TOLERANCE
+      tolerance_joints: [ 0.07, 0.07, 0.05 ]
 
   joint1:
     home: &JOINT1_HOME_POS
@@ -164,6 +168,17 @@ common:
                   -0.204
     get_own_s1: &JOINT6_GET_S1
                   -0.301
+  small_joint1:
+    home: &SMALL_JOINT1_HOME_POS
+      -1.015
+
+  small_joint2:
+    home: &SMALL_JOINT2_HOME_POS
+      2.079
+
+  small_joint3:
+    home: &SMALL_JOINT3_HOME_POS
+      0.496
 
   middle_pitch:
     ground_stone: &MIDDLE_PITCH_GROUND_STONE
@@ -216,6 +231,14 @@ common:
       tolerance:
         <<: *NORMAL_TOLERANCE
 
+  small_arm:
+    small_arm_home: &SMALL_ARM_HOME_POS
+      joints: [ *SMALL_JOINT1_HOME_POS, *SMALL_JOINT2_HOME_POS, *SMALL_JOINT3_HOME_POS ]
+      common:
+        <<: *NORMALLY
+      tolerance:
+        <<: *SMALL_ARM_NORMAL_TOLERANCE
+
   gimbal:
     right_pos: &RIGHT_POS
       frame: base_link
@@ -261,16 +284,16 @@ common:
     close_s3: &CLOSE_S3
       pin: 3
       state: false
-    open_gold: &OPEN_GOLD
+    OPEN_SMALL_GRIPPER: &OPEN_SMALL_GRIPPER
       pin: 4
       state: true
-    close_gold: &CLOSE_GOLD
+    CLOSE_SMALL_GRIPPER: &CLOSE_SMALL_GRIPPER
       pin: 4
       state: false
-    open_silver_gripper: &OPEN_S_GRIPPER
+    open_silver_gripper: &OPEN_SMALL_PUMP
       pin: 5
       state: true
-    close_silver_gripper: &CLOSE_S_GRIPPER
+    close_silver_gripper: &CLOSE_SMALL_PUMP
       pin: 5
       state: false
 
@@ -353,10 +376,10 @@ steps_list:
         <<: *CLOSE_S3
     - step: "g1 close"
       gripper:
-        <<: *CLOSE_GOLD
+        <<: *CLOSE_SMALL_GRIPPER
     - step: "close silver gripper"
       gripper:
-        <<: *CLOSE_S_GRIPPER
+        <<: *CLOSE_SMALL_PUMP
     - step: "gimbal look front"
       gimbal:
         <<: *FRONT_POS
@@ -365,18 +388,24 @@ steps_list:
         <<: *CLOSE_MAIN_GRIPPER
 
   HOME_WITH_PITCH:
-    - step: "rotate up"
-      silver_rotator:
-        target: 1.64
     - step: "gimbal look front"
       gimbal:
         <<: *FRONT_POS
     - step: "arm home pos"
       arm:
         <<: *HOME
+    - step: "small arm home pos"
+      small_arm:
+        <<: *SMALL_ARM_HOME_POS
     - step: "main close"
       gripper:
         <<: *CLOSE_MAIN_GRIPPER
+    - step: "small close pump"
+      gripper:
+        <<: *CLOSE_SMALL_PUMP
+    - step: "small close gripper"
+      gripper:
+        <<: *CLOSE_SMALL_GRIPPER
     - step: "middle pitch down"
       middle_pitch:
         target: *MIDDLE_PITCH_GROUND_STONE
@@ -500,7 +529,7 @@ steps_list:
         delay: 0.3
     - step: "drop side gold"
       gripper:
-        <<: *CLOSE_GOLD
+        <<: *CLOSE_SMALL_GRIPPER
     - step: "add stone"
       stone_num:
         change: "-g"
@@ -518,7 +547,7 @@ steps_list:
         delay: 0.3
     - step: "drop side gold"
       gripper:
-        <<: *CLOSE_GOLD
+        <<: *CLOSE_SMALL_GRIPPER
     - step: "add stone"
       stone_num:
         change: "-g"
@@ -589,7 +618,7 @@ steps_list:
         target: 1.57
     - step: "open silver gripper"
       gripper:
-        <<: *OPEN_S_GRIPPER
+        <<: *OPEN_SMALL_PUMP
 
     - step: "open gripper1"
       gripper:
@@ -635,7 +664,7 @@ steps_list:
         target: 1.57
     - step: "open silver gripper"
       gripper:
-        <<: *OPEN_S_GRIPPER
+        <<: *OPEN_SMALL_PUMP
     - step: "open gripper2"
       gripper:
         <<: *OPEN_S2
@@ -680,7 +709,7 @@ steps_list:
         target: 1.57
     - step: "open silver gripper"
       gripper:
-        <<: *OPEN_S_GRIPPER
+        <<: *OPEN_SMALL_PUMP
     - step: "open gripper3"
       gripper:
         <<: *OPEN_S3
@@ -936,7 +965,7 @@ steps_list:
           <<: *BIGGER_TOLERANCE
     - step: "close gold gripper"
       gripper:
-        <<: *CLOSE_GOLD
+        <<: *CLOSE_SMALL_GRIPPER
     - step: "move gold gripper back"
       gold_pusher:
         target: 0.00001
@@ -970,7 +999,7 @@ steps_list:
         target: 1.57
     - step: "open silver gripper"
       gripper:
-        <<: *OPEN_S_GRIPPER
+        <<: *OPEN_SMALL_PUMP
     - step: "ready get small island L silver"
       arm:
         joints: [ *JOINT1_READY_GET_SMALL_POS, *JOINT2_GET_SMALL_ISLAND_R_POS, *JOINT3_GET_SMALL_ISLAND_R_POS, *JOINT4_ZERO_POS, *JOINT5_DOWN_90, *JOINT6_SMALL3 ]
@@ -1124,7 +1153,7 @@ steps_list:
         <<: *OPEN_S3
     - step: "open silver gripper"
       gripper:
-        <<: *OPEN_S_GRIPPER
+        <<: *OPEN_SMALL_PUMP
     - step: "lift gimbal up"
       arm:
         joints: [ *JOINT1_GET_SMALL_POS, *JOINT2_AVOID_CONTROLLER_POS, *JOINT3_HOME_POS, *JOINT4_HOME_POS, *JOINT5_HOME_POS, *JOINT6_HOME_POS ]
@@ -1216,7 +1245,7 @@ steps_list:
         target: 0.00001
     - step: "open gold gripper"
       gripper:
-        <<: *OPEN_GOLD
+        <<: *OPEN_SMALL_GRIPPER
   MID_BIG_ISLAND0:
     - step: "get gold"
       gold_pusher:
@@ -1375,7 +1404,7 @@ steps_list:
         target: 0.00001
     - step: "open gold gripper"
       gripper:
-        <<: *OPEN_GOLD
+        <<: *OPEN_SMALL_GRIPPER
     - step: "middle pitch up"
       middle_pitch:
         target: *MIDDLE_PITCH_HIGHEST
@@ -1512,66 +1541,47 @@ steps_list:
     - step: "main close"
       gripper:
         <<: *CLOSE_MAIN_GRIPPER
-  OS1:
-    - step: "s1 open"
-      gripper:
-        <<: *OPEN_S1
-  CS1:
-    - step: "s1 close"
-      gripper:
-        <<: *CLOSE_S1
-  OS2:
-    - step: "s2 open"
-      gripper:
-        <<: *OPEN_S2
-  CS2:
-    - step: "s2 close"
-      gripper:
-        <<: *CLOSE_S2
-  OS3:
-    - step: "s3 open"
-      gripper:
-        <<: *OPEN_S3
-  CS3:
-    - step: "s3 close"
-      gripper:
-        <<: *CLOSE_S3
   OG:
     - step: "g1 open"
       gripper:
-        <<: *OPEN_GOLD
+        <<: *OPEN_SMALL_GRIPPER
   CG:
     - step: "g1 close"
       gripper:
-        <<: *CLOSE_GOLD
+        <<: *CLOSE_SMALL_GRIPPER
   OSG:
     - step: "g1 close"
       gripper:
-        <<: *OPEN_S_GRIPPER
+        <<: *OPEN_SMALL_PUMP
   CSG:
     - step: "close silver gripper"
       gripper:
-        <<: *CLOSE_S_GRIPPER
+        <<: *CLOSE_SMALL_PUMP
+  OS:
+    - step: "open small arm pump"
+      gripper:
+        <<: *OPEN_SMALL_PUMP
+    - step: "open small arm gripper"
+      gripper:
+        <<: *OPEN_SMALL_GRIPPER
+  CS:
+    - step: "close small arm pump"
+      gripper:
+        <<: *CLOSE_SMALL_PUMP
+    - step: "close small arm gripper"
+      gripper:
+        <<: *CLOSE_SMALL_GRIPPER
 
   CA:
     - step: "main close"
       gripper:
         <<: *CLOSE_MAIN_GRIPPER
-    - step: "s1 close"
-      gripper:
-        <<: *CLOSE_S1
-    - step: "s2 close"
-      gripper:
-        <<: *CLOSE_S2
-    - step: "s3 close"
-      gripper:
-        <<: *CLOSE_S3
     - step: "g1 close"
       gripper:
-        <<: *CLOSE_GOLD
+        <<: *CLOSE_SMALL_GRIPPER
     - step: "close silver gripper"
       gripper:
-        <<: *CLOSE_S_GRIPPER
+        <<: *CLOSE_SMALL_PUMP
 
   OA:
     - step: "main OPEN"
@@ -1579,19 +1589,10 @@ steps_list:
         <<: *OPEN_MAIN_GRIPPER
     - step: "s1 OPEN"
       gripper:
-        <<: *OPEN_S1
-    - step: "s2 OPEN"
-      gripper:
-        <<: *OPEN_S2
-    - step: "s3 OPEN"
-      gripper:
-        <<: *OPEN_S3
-    - step: "g1 OPEN"
-      gripper:
-        <<: *OPEN_GOLD
+        <<: *OPEN_SMALL_GRIPPER
     - step: "OPEN silver gripper"
       gripper:
-        <<: *OPEN_S_GRIPPER
+        <<: *OPEN_SMALL_PUMP
 
   LV5_L_S1:
     - step: "middle pitch up"
@@ -1638,7 +1639,7 @@ steps_list:
           <<: *NORMAL_TOLERANCE
     - step: "close silver gripper"
       gripper:
-        <<: *CLOSE_S_GRIPPER
+        <<: *CLOSE_SMALL_PUMP
     - step: "lift arm"
       arm:
         joints: [ *JOINT1_READY_GET_STORED_POS, -1.7, -1.263, *JOINT4_ZERO_POS, *JOINT5_DOWN_90, *JOINT6_HOME_POS ]
@@ -1819,7 +1820,7 @@ steps_list:
           <<: *BIGGER_TOLERANCE
     - step: "close gold gripper"
       gripper:
-        <<: *CLOSE_GOLD
+        <<: *CLOSE_SMALL_GRIPPER
     - step: "move gold gripper back"
       gold_pusher:
         target: 0.00001
@@ -1892,7 +1893,7 @@ steps_list:
           <<: *NORMAL_TOLERANCE
     - step: "close silver gripper"
       gripper:
-        <<: *CLOSE_S_GRIPPER
+        <<: *CLOSE_SMALL_PUMP
     - step: "lift arm"
       arm:
         joints: [ *JOINT1_READY_GET_STORED_POS, -1.7, -1.263, *JOINT4_ZERO_POS, *JOINT5_DOWN_90, *JOINT6_HOME_POS ]
@@ -2046,7 +2047,7 @@ steps_list:
           <<: *BIGGER_TOLERANCE
     - step: "close gold gripper"
       gripper:
-        <<: *CLOSE_GOLD
+        <<: *CLOSE_SMALL_GRIPPER
     - step: "move gold gripper back"
       gold_pusher:
         target: 0.00001
@@ -2112,7 +2113,7 @@ steps_list:
           <<: *NORMAL_TOLERANCE
     - step: "close silver gripper"
       gripper:
-        <<: *CLOSE_S_GRIPPER
+        <<: *CLOSE_SMALL_PUMP
     - step: "arm enter exchange pos"
       arm:
         <<: *LV4_EXCHANGE
@@ -2232,7 +2233,7 @@ steps_list:
           <<: *BIGGER_TOLERANCE
     - step: "close gold gripper"
       gripper:
-        <<: *CLOSE_GOLD
+        <<: *CLOSE_SMALL_GRIPPER
     - step: "move gold gripper back"
       gold_pusher:
         target: 0.00001
@@ -2259,3 +2260,459 @@ steps_list:
     - step: "gimbal ready"
       gimbal:
         <<: *RIGHT_POS
+
+  TEST_SMALL_ARM:
+    - step: "test small_arm1"
+      small_arm:
+        joints: [ -1.045, 2.097, 0.413]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *SMALL_ARM_NORMAL_TOLERANCE
+  TEST_SMALL_ARM0:
+    - step: "test small_arm1"
+      small_arm:
+        joints: [ 0.001, 0.001, 0.001 ]
+        common:
+          <<: *SLOWLY
+        tolerance:
+          <<: *SMALL_ARM_BIGGER_TOLERANCE
+  TEST_AUTO0:
+    - step: "test auto points"
+      auto_exchange:
+        tolerance_position: 0.05
+        tolerance_orientation: 0.08
+        common:
+          <<: *NORMALLY
+        points:
+          point_mid:
+            frame: "exchanger"
+            xyz: [ 0.2, 0.0, 0.0 ]
+            rpy: [ -1.57, 3.14, 0.0 ]
+          point_final:
+            frame: "exchanger"
+            xyz: [ 0.0, 0.0, 0.0 ]
+            rpy: [ -1.57, 3.14, 0.0 ]
+
+  TEST_AUTO:
+    - step: "test auto"
+      auto_exchange:
+        tolerance_position: 0.01
+        tolerance_orientation: 0.03
+        common:
+          <<: *NORMALLY
+        auto:
+          straight_distance: 0.2
+          frame: "exchanger"
+
+  SIM_TEST_AUTO:
+    - step: "test auto"
+      auto_exchange:
+        tolerance_position: 0.01
+        tolerance_orientation: 0.03
+        common:
+          <<: *NORMALLY
+        auto:
+          straight_distance: 0.2
+          frame: "deep_exchanger"
+
+#################### new RM2025 ###################
+
+  25GET_SMALL_ISLAND:
+    - step: "gimbal look right"
+      gimbal:
+        <<: *RIGHT_POS
+    - step: "middle pitch up"
+      middle_pitch:
+        target: *MIDDLE_PITCH_NORMAL
+    - step: "big arm ready"
+      arm:
+        joints: [ 0.002, -0.203, -2.118, -0.034, 1.046, -0.123 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "small arm ready"
+      small_arm:
+        joints: [ 0.068, 1.807, 1.152]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *SMALL_ARM_NORMAL_TOLERANCE
+    - step: "open main gripper"
+      gripper:
+        <<: *OPEN_MAIN_GRIPPER
+    - step: "open small arm pump"
+      gripper:
+        <<: *OPEN_SMALL_PUMP
+    - step: "open small arm gripper"
+      gripper:
+        <<: *OPEN_SMALL_GRIPPER
+  25GET_SMALL_ISLAND0:
+    - step: "big arm get stone"
+      middle_pitch:
+        target: 0.405
+    - step: "small arm get stone"
+      small_arm:
+        joints: [ 0.197, 1.936, 0.951 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *SMALL_ARM_NORMAL_TOLERANCE
+    - step: "big arm up"
+      arm:
+        joints: [ 0.255, -0.203, -2.118, -0.034, 1.046, -0.123 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "small arm up half"
+      small_arm:
+        joints: [ -0.011, 1.697, 1.342]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *SMALL_ARM_NORMAL_TOLERANCE
+    - step: "small arm up"
+      small_arm:
+        joints: [ -0.011, 1.294, 1.722]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *SMALL_ARM_NORMAL_TOLERANCE
+  25GET_SMALL_ISLAND00:
+    - step: "small arm lift stone"
+      small_arm:
+        joints: [ -1.112, 2.295, -1.212]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *SMALL_ARM_NORMAL_TOLERANCE
+    - step: "big arm ready press stone"
+      arm:
+        joints: [ 0.299, 0.868, -2.342, 0.029, 0.527, -1.04 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "middle pitch down"
+      middle_pitch:
+        target: *MIDDLE_PITCH_GROUND_STONE
+        delay: 0.5
+    - step: "big arm press stone"
+      arm:
+        joints: [ 0.224, 0.868, -2.342, 0.029, 0.527, -1.04 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+
+  25GET_BIG_ISLAND:
+    - step: "gimbal look right"
+      gimbal:
+        <<: *RIGHT_POS
+    - step: "middle pitch up"
+      middle_pitch:
+        target: *MIDDLE_PITCH_NORMAL
+    - step: "big arm ready"
+      arm:
+        joints: [ 0.008, 1.06, -2.332, -1.594, -0.184, -0.382 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "small arm ready"
+      small_arm:
+        joints: [ -0.937, 2.46, -0.023 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *SMALL_ARM_NORMAL_TOLERANCE
+    - step: "open main gripper"
+      gripper:
+        <<: *OPEN_MAIN_GRIPPER
+    - step: "open small arm pump"
+      gripper:
+        <<: *OPEN_SMALL_PUMP
+    - step: "open small arm gripper"
+      gripper:
+        <<: *OPEN_SMALL_GRIPPER
+  25GET_BIG_ISLAND0:
+    - step: "big arm get stone"
+      arm:
+        joints: [ 0.008, 0.351, -1.72, -1.594, -0.184, -0.382 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "small arm get stone"
+      small_arm:
+        joints: [ 0.253, 1.605, -0.359]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *SMALL_ARM_NORMAL_TOLERANCE
+    - step: "middle pitch up"
+      middle_pitch:
+        target: *MIDDLE_PITCH_HIGHEST
+    - step: "big arm up stone"
+      arm:
+        joints: [ 0.061, 0.328, -1.72, -1.594, -0.184, -0.382 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "small arm up stone"
+      small_arm:
+        joints: [ 0.315, 1.278, 0.289]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *SMALL_ARM_BIGGER_TOLERANCE
+    - step: "big arm pull out stone"
+      arm:
+        joints: [ 0.061, 1.05, -2.197, -1.594, 0.063, -0.382 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "small arm pull stone"
+      small_arm:
+        joints: [ -0.596, 2.087, 0.11 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *SMALL_ARM_NORMAL_TOLERANCE
+    - step: "small arm pull out stone"
+      small_arm:
+        joints: [ -1.111, 2.227, 0.469 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *SMALL_ARM_NORMAL_TOLERANCE
+  25GET_BIG_ISLAND00:
+    - step: "small arm lift stone"
+      small_arm:
+        joints: [ -1.112, 2.295, -1.212]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *SMALL_ARM_NORMAL_TOLERANCE
+    - step: "big arm ready press stone"
+      arm:
+        joints: [ 0.299, 0.868, -2.342, 0.029, 0.527, -1.04 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "middle pitch down"
+      middle_pitch:
+        target: *MIDDLE_PITCH_GROUND_STONE
+        delay: 0.5
+    - step: "big arm press stone"
+      arm:
+        joints: [ 0.224, 0.868, -2.342, 0.029, 0.527, -1.04 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+
+  25GET_BIG_ISLAND_RIGHT:
+    - step: "gimbal look front"
+      gimbal:
+        <<: *FRONT_POS
+    - step: "middle pitch up"
+      middle_pitch:
+        target: *MIDDLE_PITCH_NORMAL
+    - step: "big arm ready"
+      arm:
+        joints: [ 0.012, -2.212, 2.199, -1.608, -0.499, 0.347 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "open main gripper"
+      gripper:
+        <<: *OPEN_MAIN_GRIPPER
+  25GET_BIG_ISLAND_RIGHT0:
+    - step: "big arm get stone"
+      arm:
+        joints: [ 0.012, -1.375, 1.75, -1.608, -0.132, -0.347 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "big arm up stone"
+      arm:
+        joints: [ 0.075, -1.375, 1.75, -1.608, -0.132, -0.347 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "big arm pull out stone"
+      arm:
+        joints: [ 0.075, -2.234, 2.121, -1.608, -0.604, -0.347 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+  25GET_BIG_ISLAND_RIGHT00:
+    - step: "big arm ready press stone"
+      arm:
+        joints: [ 0.299, 0.868, -2.342, 0.029, 0.527, -1.04 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "middle pitch down"
+      middle_pitch:
+        target: *MIDDLE_PITCH_GROUND_STONE
+        delay: 0.5
+    - step: "big arm press stone"
+      arm:
+        joints: [ 0.224, 0.868, -2.342, 0.029, 0.527, -1.04 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+
+  25GET_BIG_ISLAND_MID:
+    - step: "gimbal look right"
+      gimbal:
+        <<: *RIGHT_POS
+    - step: "middle pitch up"
+      middle_pitch:
+        target: *MIDDLE_PITCH_NORMAL
+    - step: "big arm ready"
+      arm:
+        joints: [ 0.012, 1.041, -2.174, -1.527, 0.304, 0.347 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "open main gripper"
+      gripper:
+        <<: *OPEN_MAIN_GRIPPER
+  25GET_BIG_ISLAND_MID0:
+    - step: "big arm get stone"
+      arm:
+        joints: [ 0.012, -0.071, -1.432, -1.527, -0.001, 0.347 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "big arm up stone"
+      arm:
+        joints: [ 0.075, -0.071, -1.432, -1.527, -0.001, 0.347 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "big arm pull out stone"
+      arm:
+        joints: [ 0.075, 1.041, -2.174, -1.527, 0.304, 0.347 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+  25GET_BIG_ISLAND_MID00:
+    - step: "big arm ready press stone"
+      arm:
+        joints: [ 0.299, 0.868, -2.342, 0.029, 0.527, -1.04 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "middle pitch down"
+      middle_pitch:
+        target: *MIDDLE_PITCH_GROUND_STONE
+        delay: 0.5
+    - step: "big arm press stone"
+      arm:
+        joints: [ 0.224, 0.868, -2.342, 0.029, 0.527, -1.04 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+
+  25GET_SMALL_ARM_STONE_UP:
+    - step: "middle pitch up"
+      middle_pitch:
+        target: *MIDDLE_PITCH_NORMAL
+    - step: "big arm ready get small arm stone"
+      arm:
+        joints: [ 0.53, -1.862, -2.317, 0.001, 1.412, -1.038 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "open main gripper"
+      gripper:
+        <<: *OPEN_MAIN_GRIPPER
+    - step: "big arm down get small arm stone"
+      arm:
+        joints: [ 0.396, -1.862, -2.317, 0.001, 1.412, -1.038 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "close small arm pump"
+      gripper:
+        <<: *CLOSE_SMALL_PUMP
+    - step: "close small arm gripper"
+      gripper:
+        <<: *CLOSE_SMALL_GRIPPER
+    - step: "big arm up stone"
+      arm:
+        joints: [ 0.536, -1.862, -2.317, 0.001, 1.412, -1.038 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+
+  25GET_SMALL_ARM_STONE_SIDE:
+    - step: "middle pitch up"
+      middle_pitch:
+        target: *MIDDLE_PITCH_NORMAL
+    - step: "big arm ready get small arm stone"
+      arm:
+        joints: [ 0.233, -1.325, -2.047, -1.589, 1.274, -1.038 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "open main gripper"
+      gripper:
+        <<: *OPEN_MAIN_GRIPPER
+    - step: "big arm down get small arm stone"
+      arm:
+        joints: [ 0.233, -1.491, -2.167, -1.589, 0.996, -1.038 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+    - step: "close small arm pump"
+      gripper:
+        <<: *CLOSE_SMALL_PUMP
+    - step: "close small arm gripper"
+      gripper:
+        <<: *CLOSE_SMALL_GRIPPER
+    - step: "big arm up stone"
+      arm:
+        joints: [ 0.333, -1.491, -2.167, -1.589, 0.996, -1.038 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
+
+  25READY_CUSTOM_EXCHANGE:
+    - step: "middle pitch up"
+      middle_pitch:
+        target: *MIDDLE_PITCH_NORMAL
+    - step: "big arm ready get small arm stone"
+      arm:
+        joints: [ 0.532, -1.519, 0.111, 0.003, 1.229, 0.006 ]
+        common:
+          <<: *NORMALLY
+        tolerance:
+          <<: *NORMAL_TOLERANCE
